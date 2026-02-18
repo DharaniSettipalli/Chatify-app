@@ -1,0 +1,68 @@
+import { generateToken } from "../lib/utils.js"
+import { userModel } from "../Models/userModel.js"
+import bcrypt from 'bcryptjs'
+
+
+export const signup = async (req, res) => {
+    const { fullName, email, password} = req.body
+    try {
+        //checking if all the fields are populated
+        if (!fullName || !email || !password) {
+            return res.status(400).json({ message: "Please enter all the required fields" })
+        }
+
+        //password length check
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Password must be atleast 6 characters" })
+        }
+
+        //email format check
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: "Please enter valid email" })
+        }
+
+        //checking if user already exists
+        const exist = await userModel.findOne({ email })
+        if (exist) {
+            return res.status(400).json({ message: "User already exists" })
+        }
+
+        //password hashing
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password,salt)
+
+        //creating user
+        const newUser = new userModel({
+            fullName,
+            email,
+            password: hashedPassword,
+        })
+        if (newUser) {
+            generateToken(newUser._id, res);
+
+            await newUser.save()
+            res.status(201).json({
+                message: 'User is created',
+                _id: newUser._id,
+                fullName: newUser.fullName,
+                email: newUser.email,
+                profilePic: newUser.profilePic
+            })
+        }
+        else {
+            return res.status(400).json({ message: "Invalid user data" })
+        }    
+    } catch (error) {
+        console.log('Error occured while signup: ', error);
+        return res.status(500).json({message: "server error"})
+    }
+}
+
+export const login = (req, res) => {
+
+}
+
+export const logout = (req, res) => {
+
+}
