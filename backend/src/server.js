@@ -4,6 +4,9 @@ import authRouter from './Routes/auth.routes.js'
 import messageRouter from './Routes/message.routes.js'
 import path from 'path'
 import { connectDB } from './lib/db.js'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
+
 
 dotenv.config()
 
@@ -16,7 +19,13 @@ const PORT = process.env.PORT || 3000
 //   res.send('Hello World')
 // }
 // )
-app.use(express.json()) //req.body
+app.use(express.json())//req.body
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
+app.use(cookieParser())
+
 app.use('/api/auth', authRouter)
 app.use('/api/messages', messageRouter)
 

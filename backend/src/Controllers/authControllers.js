@@ -1,4 +1,5 @@
 import { sendWelcomeEmail } from "../emails/emailHandlers.js"
+import cloudinary from "../lib/cloudinary.js"
 import { generateToken } from "../lib/utils.js"
 import { userModel } from "../Models/userModel.js"
 import bcrypt from 'bcryptjs'
@@ -85,7 +86,7 @@ export const login = async (req, res) => {
         if (!isPasswordCorrect) return res.status(400).json({ message: 'Invalid credentials' })
         
         generateToken(user._id, res)
-
+        
         res.status(200).json({
             message: 'User logged in',
             _id: user._id,
@@ -103,4 +104,23 @@ export const login = async (req, res) => {
 export const logout = (_, res) => {
     res.cookie('jwt', '', { maxAge: 0 })
     res.status(200).json({message:'Logged out successfully'})
+}
+
+export const updateProfile = async (req,res) => {
+    try {
+        const { profilePic } = req.body
+        if (!profilePic) return res.status(400).json({ message: 'Profile pic is required' })
+        
+        const userId = req.user._id
+
+        const uploadResponse = await cloudinary.uploader.upload(profilePic)
+
+        const updatedUser = await userModel.findByIdAndUpdate(userId, {profilePic: uploadResponse.secure_url}, {new: true})
+        
+        res.status(200).json({message: 'Updated profile successfully', updatedUser})
+
+    } catch (error) {
+        console.log('Error updating profile: ', error);
+        res.status(500).json({ message: 'server error' })
+    }
 }
