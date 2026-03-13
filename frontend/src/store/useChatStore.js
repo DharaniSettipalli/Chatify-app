@@ -1,4 +1,6 @@
+import toast from "react-hot-toast";
 import { create } from "zustand";
+import { axiosInstance } from "../lib/axios";
 
 export const useChatStore = create((set, get) => ({
     allContacts: [],
@@ -8,7 +10,7 @@ export const useChatStore = create((set, get) => ({
     selectedUser: null,
     isUsersLoading: false,
     isMessagesLoading: false,
-    isSoundEnabled: localStorage.getItem('isSoundEnabled'),
+    isSoundEnabled: JSON.parse(localStorage.getItem('isSoundEnabled')),
 
     toggleSound: () => {
         localStorage.setItem('isSoundEnabled', !get().isSoundEnabled)
@@ -16,7 +18,7 @@ export const useChatStore = create((set, get) => ({
     },
 
     setActiveTab: (tab) => {
-        activeTab: tab
+        set({ activeTab: tab })
     },
 
     setSelectedUser: (selectedUser) => {
@@ -40,6 +42,8 @@ export const useChatStore = create((set, get) => ({
         try {
             const res = await axiosInstance.get('http://localhost:3000/api/messages/chats')
             set({ chats: res.data })
+            console.log(res);
+            
         } catch (error) {
             console.error('Error fetching chat partners:', error)
             toast.error('Error fetching chat partners')

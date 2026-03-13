@@ -1,11 +1,43 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import UsersLoadingSkeleton from './UsersLoadingSkeleton'
+import NoChatsFound from './NoChatsFound'
+import { useChatStore } from '../store/useChatStore'
 
 const ContactList = () => {
-  return (
-    <div>
-      Contact list
-    </div>
-  )
+
+    const { getAllContacts, isUsersLoading, allContacts, setSelectedUser } = useChatStore()
+
+    useEffect(() => {
+        getAllContacts()
+    }, [getAllContacts])
+
+    if (isUsersLoading) {
+        return <UsersLoadingSkeleton />
+    }
+    if (allContacts.length === 0) {
+        return <NoChatsFound />
+    }
+    return (
+        <>
+            {
+                allContacts.map((contact) => {
+                    return <div key={contact._id}
+                        onClick={() => setSelectedUser(contact)}
+                        className='bg-cyan-500/10 p-4 rounded-lg cursor-pointer hover:bg-cyan-500/20 transition-colors'
+                    >
+                        <div className='flex items-center gap-3'>
+                            <div className={`avatar online`}>
+                                <div className='size-12 rounded-full'>
+                                    <img src={contact.profilePic || '/avatar.png'} alt={contact.fullName} />
+                                </div>
+                            </div>
+                            <h4 className='text-slate-200 font-medium truncate'>{contact.fullName}</h4>
+                        </div>
+                    </div>
+                })
+            }
+        </>
+    )
 }
 
 export default ContactList

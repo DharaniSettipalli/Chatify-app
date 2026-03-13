@@ -92,7 +92,6 @@ export const getChatPartners = async (req, res) => {
                 { receiverId: loggedInUserId }
             ]
         })
-        //console.log('me');
 
         const chatPartnerIds = [
             ...new Set(
@@ -103,8 +102,6 @@ export const getChatPartners = async (req, res) => {
                 })
             )
         ]
-        console.log(chatPartnerIds);
-
         const chatPartners = await userModel.find({
             _id: {
                 $in: chatPartnerIds

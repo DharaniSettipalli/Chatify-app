@@ -4,11 +4,11 @@ import 'dotenv/config'
 
 export const protectRoute = async (req,res,next) => {
     try {
-        console.log(req.cookies);
+        //console.log(req.cookies);
         
         const token = req.cookies.jwt
 
-        //console.log(token);
+        console.log("token: ", token);
           
         if (!token) return res.status(401).json({ message: "Unauthorized- No token provided" })
         
