@@ -10,13 +10,16 @@ export const generateToken = async (userId, res) => {
         expiresIn: '7d'
     })
 
+    console.log('token from generate token: ', token);
+    
+
     res.cookie("jwt", token, {
         maxAge: 7 * 24 * 60 * 60 * 1000 ,//in milli
         httpOnly: true, //prevent XSS attacks
-        sameSite: 'none', //CSRF attacks
+        sameSite: 'Strict', //CSRF attacks
         secure: process.env.NODE_ENV === 'development' ? false: true
     })
-    console.log(res);
+    console.log('cookies: ',res.cookie);
     //console.log(token);
     
     return token

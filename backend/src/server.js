@@ -20,11 +20,11 @@ const PORT = process.env.PORT || 3000
 // }
 // )
 app.use(express.json())//req.body
+app.use(cookieParser())//req.cookies
 app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true
 }));
-app.use(cookieParser())
 
 app.use('/api/auth', authRouter)
 app.use('/api/messages', messageRouter)
