@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 3000
 //   res.send('Hello World')
 // }
 // )
-app.use(express.json())//req.body
+app.use(express.json({limit: '5mb'}))//req.body
 app.use(cookieParser())//req.cookies
 app.use(cors({
   origin: process.env.CLIENT_URL,
