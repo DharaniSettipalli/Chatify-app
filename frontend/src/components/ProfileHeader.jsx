@@ -8,7 +8,7 @@ const ProfileHeader = () => {
     const { logout, authUser, updateProfile } = useAuthStore()
     const { isSoundEnabled, toggleSound } = useChatStore()
     const [selectedImg, setSelectedImg] = React.useState(null)
-
+ 
     const fileInputRef = React.useRef(null)
 
     const handleImageUpload = (e) => {
