@@ -9,21 +9,27 @@ import MessageLoadingSkeleton from './MessageLoadingSkeleton'
 
 const ChatContainer = () => {
 
-    const { selectedUser, getMessagesByUserId, messages, isMessagesLoading } = useChatStore()
+    const { selectedUser, getMessagesByUserId, messages, isMessagesLoading, subscribeToMessages, unsubscribeFromMessages } = useChatStore()
     const { authUser } = useAuthStore()
     const messageEnd = React.useRef(null)
     
     useEffect(() => {
         if (selectedUser) {
             getMessagesByUserId(selectedUser._id)
+            subscribeToMessages();
+
+            //cleanup
+            return ()=> unsubscribeFromMessages()
         }
-    }, [selectedUser, getMessagesByUserId])
+    }, [selectedUser, getMessagesByUserId, subscribeToMessages, unsubscribeFromMessages])
 
     useEffect(() => {
         if (messageEnd.current) {
             messageEnd.current.scrollIntoView({ behavior: 'smooth' })
         }
-    },[messages])
+    }, [messages])
+    
+
 
   return (
       <>
